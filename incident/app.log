@@ -1,0 +1,78 @@
+# excerpt from shop pods, sampled; timestamps UTC
+2026-09-17 10:30:13,000Z ERROR shop: telemetry: export failed to otel-collector.observability.svc.cluster.local:4317: [Errno -2] Name or service not known (spans dropped: 512)
+2026-09-17 10:37:13,000Z ERROR shop: telemetry: export failed to otel-collector.observability.svc.cluster.local:4317: [Errno -2] Name or service not known (spans dropped: 512)
+2026-09-17 10:44:13,000Z ERROR shop: telemetry: export failed to otel-collector.observability.svc.cluster.local:4317: [Errno -2] Name or service not known (spans dropped: 512)
+2026-09-17 10:51:13,000Z ERROR shop: telemetry: export failed to otel-collector.observability.svc.cluster.local:4317: [Errno -2] Name or service not known (spans dropped: 512)
+2026-09-17 10:58:13,000Z ERROR shop: telemetry: export failed to otel-collector.observability.svc.cluster.local:4317: [Errno -2] Name or service not known (spans dropped: 512)
+2026-09-17 11:05:13,000Z ERROR shop: telemetry: export failed to otel-collector.observability.svc.cluster.local:4317: [Errno -2] Name or service not known (spans dropped: 512)
+2026-09-17 11:12:13,000Z ERROR shop: telemetry: export failed to otel-collector.observability.svc.cluster.local:4317: [Errno -2] Name or service not known (spans dropped: 512)
+2026-09-17 11:19:13,000Z ERROR shop: telemetry: export failed to otel-collector.observability.svc.cluster.local:4317: [Errno -2] Name or service not known (spans dropped: 512)
+2026-09-17 11:26:13,000Z ERROR shop: telemetry: export failed to otel-collector.observability.svc.cluster.local:4317: [Errno -2] Name or service not known (spans dropped: 512)
+2026-09-17 11:33:13,000Z ERROR shop: telemetry: export failed to otel-collector.observability.svc.cluster.local:4317: [Errno -2] Name or service not known (spans dropped: 512)
+2026-09-17 11:40:13,000Z ERROR shop: telemetry: export failed to otel-collector.observability.svc.cluster.local:4317: [Errno -2] Name or service not known (spans dropped: 512)
+2026-09-17 11:42:20,000Z INFO shop: shop starting on :8800, checkout_enabled=true   [pod shop-7d9c6b-x2k4p]
+2026-09-17 11:47:13,000Z ERROR shop: telemetry: export failed to otel-collector.observability.svc.cluster.local:4317: [Errno -2] Name or service not known (spans dropped: 512)
+2026-09-17 11:54:13,000Z ERROR shop: telemetry: export failed to otel-collector.observability.svc.cluster.local:4317: [Errno -2] Name or service not known (spans dropped: 512)
+2026-09-17 12:01:13,000Z ERROR shop: telemetry: export failed to otel-collector.observability.svc.cluster.local:4317: [Errno -2] Name or service not known (spans dropped: 512)
+2026-09-17 12:08:13,000Z ERROR shop: telemetry: export failed to otel-collector.observability.svc.cluster.local:4317: [Errno -2] Name or service not known (spans dropped: 512)
+2026-09-17 12:15:13,000Z ERROR shop: telemetry: export failed to otel-collector.observability.svc.cluster.local:4317: [Errno -2] Name or service not known (spans dropped: 512)
+2026-09-17 12:22:13,000Z ERROR shop: telemetry: export failed to otel-collector.observability.svc.cluster.local:4317: [Errno -2] Name or service not known (spans dropped: 512)
+2026-09-17 12:25:00,000Z INFO shop: checkout rejected: sku=SKU-9538 qty=1 coupon=JULY20 -> invalid coupon
+2026-09-17 12:26:43,000Z INFO shop: checkout rejected: sku=SKU-9538 qty=1 coupon=JULY20 -> invalid coupon
+2026-09-17 12:28:26,000Z INFO shop: checkout rejected: sku=SKU-9538 qty=1 coupon=JULY20 -> invalid coupon
+2026-09-17 12:29:13,000Z ERROR shop: telemetry: export failed to otel-collector.observability.svc.cluster.local:4317: [Errno -2] Name or service not known (spans dropped: 512)
+2026-09-17 12:30:09,000Z INFO shop: checkout rejected: sku=SKU-9538 qty=1 coupon=JULY20 -> invalid coupon
+2026-09-17 12:31:52,000Z INFO shop: checkout rejected: sku=SKU-9538 qty=1 coupon=JULY20 -> invalid coupon
+2026-09-17 12:33:35,000Z INFO shop: checkout rejected: sku=SKU-9538 qty=1 coupon=JULY20 -> invalid coupon
+2026-09-17 12:35:18,000Z INFO shop: checkout rejected: sku=SKU-9538 qty=1 coupon=JULY20 -> invalid coupon
+2026-09-17 12:36:13,000Z ERROR shop: telemetry: export failed to otel-collector.observability.svc.cluster.local:4317: [Errno -2] Name or service not known (spans dropped: 512)
+2026-09-17 12:37:01,000Z INFO shop: checkout rejected: sku=SKU-9538 qty=1 coupon=JULY20 -> invalid coupon
+2026-09-17 12:37:54,000Z INFO shop: checkout rejected: sku=SKU-9538 qty=1 coupon=JULY20 -> invalid coupon
+2026-09-17 12:39:37,000Z INFO shop: checkout rejected: sku=SKU-9538 qty=1 coupon=JULY20 -> invalid coupon
+2026-09-17 12:41:00,000Z WARNING mariadb: slow query 14.2s user=bi_reader: SELECT DATE(created_at), SUM(total) FROM orders GROUP BY 1
+2026-09-17 12:41:20,000Z INFO shop: checkout rejected: sku=SKU-9538 qty=1 coupon=JULY20 -> invalid coupon
+2026-09-17 12:43:03,000Z INFO shop: checkout rejected: sku=SKU-9538 qty=1 coupon=JULY20 -> invalid coupon
+2026-09-17 12:43:13,000Z ERROR shop: telemetry: export failed to otel-collector.observability.svc.cluster.local:4317: [Errno -2] Name or service not known (spans dropped: 512)
+2026-09-17 12:44:46,000Z INFO shop: checkout rejected: sku=SKU-9538 qty=1 coupon=JULY20 -> invalid coupon
+2026-09-17 12:46:29,000Z INFO shop: checkout rejected: sku=SKU-9538 qty=1 coupon=JULY20 -> invalid coupon
+2026-09-17 12:48:12,000Z INFO shop: checkout rejected: sku=SKU-9538 qty=1 coupon=JULY20 -> invalid coupon
+2026-09-17 12:49:05,000Z INFO shop: checkout rejected: sku=SKU-9538 qty=1 coupon=JULY20 -> invalid coupon
+2026-09-17 12:50:13,000Z ERROR shop: telemetry: export failed to otel-collector.observability.svc.cluster.local:4317: [Errno -2] Name or service not known (spans dropped: 512)
+2026-09-17 12:50:48,000Z INFO shop: checkout rejected: sku=SKU-9538 qty=1 coupon=JULY20 -> invalid coupon
+2026-09-17 12:52:31,000Z INFO shop: checkout rejected: sku=SKU-9538 qty=1 coupon=JULY20 -> invalid coupon
+2026-09-17 12:57:13,000Z ERROR shop: telemetry: export failed to otel-collector.observability.svc.cluster.local:4317: [Errno -2] Name or service not known (spans dropped: 512)
+2026-09-17 13:00:04,000Z WARNING shop: readiness: db check failed: (1040, 'Too many connections')
+2026-09-17 13:00:06,000Z ERROR shop: GET /products -> 500 {'error': "(1040, 'Too many connections')"}
+2026-09-17 13:00:09,000Z WARNING shop: readiness: db check failed: (1040, 'Too many connections')
+2026-09-17 13:04:13,000Z ERROR shop: telemetry: export failed to otel-collector.observability.svc.cluster.local:4317: [Errno -2] Name or service not known (spans dropped: 512)
+2026-09-17 13:11:13,000Z ERROR shop: telemetry: export failed to otel-collector.observability.svc.cluster.local:4317: [Errno -2] Name or service not known (spans dropped: 512)
+2026-09-17 13:18:13,000Z ERROR shop: telemetry: export failed to otel-collector.observability.svc.cluster.local:4317: [Errno -2] Name or service not known (spans dropped: 512)
+2026-09-17 13:25:13,000Z ERROR shop: telemetry: export failed to otel-collector.observability.svc.cluster.local:4317: [Errno -2] Name or service not known (spans dropped: 512)
+2026-09-17 13:32:13,000Z ERROR shop: telemetry: export failed to otel-collector.observability.svc.cluster.local:4317: [Errno -2] Name or service not known (spans dropped: 512)
+2026-09-17 13:39:13,000Z ERROR shop: telemetry: export failed to otel-collector.observability.svc.cluster.local:4317: [Errno -2] Name or service not known (spans dropped: 512)
+2026-09-17 13:46:13,000Z ERROR shop: telemetry: export failed to otel-collector.observability.svc.cluster.local:4317: [Errno -2] Name or service not known (spans dropped: 512)
+2026-09-17 13:53:13,000Z ERROR shop: telemetry: export failed to otel-collector.observability.svc.cluster.local:4317: [Errno -2] Name or service not known (spans dropped: 512)
+2026-09-17 14:00:13,000Z ERROR shop: telemetry: export failed to otel-collector.observability.svc.cluster.local:4317: [Errno -2] Name or service not known (spans dropped: 512)
+2026-09-17 14:07:13,000Z ERROR shop: telemetry: export failed to otel-collector.observability.svc.cluster.local:4317: [Errno -2] Name or service not known (spans dropped: 512)
+2026-09-17 14:14:13,000Z ERROR shop: telemetry: export failed to otel-collector.observability.svc.cluster.local:4317: [Errno -2] Name or service not known (spans dropped: 512)
+2026-09-17 14:21:13,000Z ERROR shop: telemetry: export failed to otel-collector.observability.svc.cluster.local:4317: [Errno -2] Name or service not known (spans dropped: 512)
+2026-09-17 14:28:13,000Z ERROR shop: telemetry: export failed to otel-collector.observability.svc.cluster.local:4317: [Errno -2] Name or service not known (spans dropped: 512)
+2026-09-17 14:35:13,000Z ERROR shop: telemetry: export failed to otel-collector.observability.svc.cluster.local:4317: [Errno -2] Name or service not known (spans dropped: 512)
+2026-09-17 14:42:13,000Z ERROR shop: telemetry: export failed to otel-collector.observability.svc.cluster.local:4317: [Errno -2] Name or service not known (spans dropped: 512)
+2026-09-17 14:49:13,000Z ERROR shop: telemetry: export failed to otel-collector.observability.svc.cluster.local:4317: [Errno -2] Name or service not known (spans dropped: 512)
+2026-09-17 14:56:13,000Z ERROR shop: telemetry: export failed to otel-collector.observability.svc.cluster.local:4317: [Errno -2] Name or service not known (spans dropped: 512)
+2026-09-17 14:59:04,000Z WARNING shop: readiness: db check failed: (1040, 'Too many connections')
+2026-09-17 14:59:06,000Z ERROR shop: GET /products -> 500 {'error': "(1040, 'Too many connections')"}
+2026-09-17 14:59:09,000Z WARNING shop: readiness: db check failed: (1040, 'Too many connections')
+2026-09-17 15:03:13,000Z ERROR shop: telemetry: export failed to otel-collector.observability.svc.cluster.local:4317: [Errno -2] Name or service not known (spans dropped: 512)
+2026-09-17 15:07:10,000Z INFO shop: shop starting on :8000, checkout_enabled=false   [pod shop-58f4d9-q8mzt]
+2026-09-17 15:10:13,000Z ERROR shop: telemetry: export failed to otel-collector.observability.svc.cluster.local:4317: [Errno -2] Name or service not known (spans dropped: 512)
+2026-09-17 15:17:13,000Z ERROR shop: telemetry: export failed to otel-collector.observability.svc.cluster.local:4317: [Errno -2] Name or service not known (spans dropped: 512)
+2026-09-17 15:24:13,000Z ERROR shop: telemetry: export failed to otel-collector.observability.svc.cluster.local:4317: [Errno -2] Name or service not known (spans dropped: 512)
+2026-09-17 15:31:13,000Z ERROR shop: telemetry: export failed to otel-collector.observability.svc.cluster.local:4317: [Errno -2] Name or service not known (spans dropped: 512)
+2026-09-17 15:32:40,000Z INFO shop: shop starting on :8000, checkout_enabled=true   [pod shop-6c7b1a-h3vnr]
+2026-09-17 15:38:13,000Z ERROR shop: telemetry: export failed to otel-collector.observability.svc.cluster.local:4317: [Errno -2] Name or service not known (spans dropped: 512)
+2026-09-17 15:45:13,000Z ERROR shop: telemetry: export failed to otel-collector.observability.svc.cluster.local:4317: [Errno -2] Name or service not known (spans dropped: 512)
+2026-09-17 15:52:13,000Z ERROR shop: telemetry: export failed to otel-collector.observability.svc.cluster.local:4317: [Errno -2] Name or service not known (spans dropped: 512)
+2026-09-17 15:59:13,000Z ERROR shop: telemetry: export failed to otel-collector.observability.svc.cluster.local:4317: [Errno -2] Name or service not known (spans dropped: 512)
+2026-09-17 16:06:13,000Z ERROR shop: telemetry: export failed to otel-collector.observability.svc.cluster.local:4317: [Errno -2] Name or service not known (spans dropped: 512)

@@ -1,0 +1,86 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: db
+  namespace: shop
+stringData:
+  root-password: "f184ee6d692b2dc4"
+  password: "4de85e311d3aff00"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mariadb-init
+  namespace: shop
+data:
+  schema.sql: |
+    CREATE TABLE products (sku VARCHAR(32) PRIMARY KEY, name VARCHAR(100), price INT NOT NULL, stock INT NOT NULL);
+    CREATE TABLE coupons (code VARCHAR(32) PRIMARY KEY, discount INT NOT NULL, active TINYINT NOT NULL);
+    CREATE TABLE orders (id BIGINT AUTO_INCREMENT PRIMARY KEY, sku VARCHAR(32), qty INT, coupon VARCHAR(32),
+                         total INT, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP);
+    INSERT INTO products VALUES
+      ('SKU-9538', 'Коврик для мыши', 1950, 1000000),
+      ('SKU-5348', 'Кабель USB-C 2м', 850, 1000000),
+      ('SKU-7418', 'Бутылка спортивная', 3000, 1000000),
+      ('SKU-8720', 'Рюкзак городской', 1350, 1000000),
+      ('SKU-2883', 'Кофе в зёрнах 1кг', 2400, 1000000),
+      ('SKU-4167', 'Power bank 10000', 2250, 1000000),
+      ('SKU-6100', 'Наушники накладные', 2050, 1000000),
+      ('SKU-7385', 'Лампа настольная', 2500, 1000000),
+      ('SKU-9239', 'Термокружка', 1950, 0);
+    INSERT INTO coupons VALUES ('WELCOME10', 10, 1), ('FALL15', 15, 1), ('JULY20', 20, 0);
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mariadb
+  namespace: shop
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: mariadb
+  template:
+    metadata:
+      labels:
+        app: mariadb
+    spec:
+      containers:
+        - name: mariadb
+          image: mariadb:11.4
+          args: ["--max-connections=28"]
+          env:
+            - name: MARIADB_ROOT_PASSWORD
+              valueFrom: {secretKeyRef: {name: db, key: root-password}}
+            - name: MARIADB_DATABASE
+              value: shop
+            - name: MARIADB_USER
+              value: shop
+            - name: MARIADB_PASSWORD
+              valueFrom: {secretKeyRef: {name: db, key: password}}
+          ports:
+            - containerPort: 3306
+          readinessProbe:
+            tcpSocket: {port: 3306}
+            periodSeconds: 5
+          volumeMounts:
+            - {name: init, mountPath: /docker-entrypoint-initdb.d}
+            - {name: data, mountPath: /var/lib/mysql}
+      volumes:
+        - name: init
+          configMap: {name: mariadb-init}
+        - name: data
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mariadb
+  namespace: shop
+spec:
+  selector:
+    app: mariadb
+  ports:
+    - port: 3306

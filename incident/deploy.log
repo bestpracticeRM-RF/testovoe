@@ -1,0 +1,9 @@
+2026-09-17T11:37:50Z pipeline#4121 build shop:v2 ok (sha 5f1c0de)
+2026-09-17T11:40:12Z pipeline#4121 kubectl apply -f k8s/ -> deployment.apps/shop configured, service/shop configured, configmap/shop-config configured
+2026-09-17T11:40:14Z pipeline#4121 ansible-playbook edge.yml -> ok=4 changed=3 failed=0
+2026-09-17T11:42:57Z pipeline#4121 rollout status deployment/shop: successfully rolled out
+2026-09-17T13:44:20Z pipeline#4125 (hotfix) kubectl apply -f k8s/20-app-config.yaml -> configmap/shop-config configured
+2026-09-17T15:06:11Z audit user=l.orlov kubectl rollout undo deployment/shop -> rolled back
+2026-09-17T15:07:35Z audit rollout status deployment/shop: successfully rolled out
+2026-09-17T15:32:08Z audit user=i.sokolov kubectl apply -f k8s/20-app-config.yaml -> configmap/shop-config configured
+2026-09-17T15:32:15Z audit user=i.sokolov kubectl rollout restart deployment/shop

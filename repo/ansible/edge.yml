@@ -1,0 +1,30 @@
+- name: Configure edge proxy
+  hosts: edge
+  gather_facts: false
+  tasks:
+    - name: Main openresty config
+      ansible.builtin.copy:
+        src: nginx.conf
+        dest: /usr/local/openresty/nginx/conf/nginx.conf
+        mode: "0644"
+      notify: Reload openresty
+
+    - name: Shop vhost
+      ansible.builtin.template:
+        src: shop.conf.j2
+        dest: /etc/nginx/conf.d/shop.conf
+        mode: "0644"
+      notify: Reload openresty
+
+    - name: Metrics allowlist
+      ansible.builtin.shell: echo "allow {{ item }};" >> /usr/local/openresty/nginx/conf/metrics-allow.conf
+      loop: "{{ metrics_allow }}"
+      notify: Reload openresty
+
+  handlers:
+    - name: Reload openresty
+      ansible.builtin.command: openresty -t -q
+      notify: Apply reload
+
+    - name: Apply reload
+      ansible.builtin.command: openresty -s reload
