@@ -1,0 +1,11 @@
+{"version": 2, "width": 80, "height": 24, "timestamp": 1792334934, "env": {"SHELL": "/bin/bash", "TERM": "xterm"}}
+[0.022583, "o", "restore.sh: dump name extracted by strict pattern\r\n"]
+[0.027771, "o", "syntax OK\r\n=== RESTORE\r\n"]
+[2.47869, "o", "restoring from: shop-2026-10-18.sql.gz\r\n"]
+[6.518462, "o", "job.batch/restore-drill condition met\r\n"]
+[6.524022, "o", "restore job completed\r\n"]
+[6.608058, "o", "=== VERIFY\r\n"]
+[6.648283, "o", "OK: 9 products restored\r\n"]
+[6.715112, "o", "checkout -> 201\r\n"]
+[6.7313, "o", "11ec642 A17: backup restore drill, verified end-to-end (drop DB -> job restore from PVC -> 9 products, checkout 201)\r\n9720d4e A16fix: scrape shop via Service port 80 (8800 is the pod targetPort)\r\n"]
+[6.732084, "o", "DONE-34\r\n"]

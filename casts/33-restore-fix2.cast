@@ -1,0 +1,4 @@
+{"version": 2, "width": 80, "height": 24, "timestamp": 1792334711, "env": {"SHELL": "/bin/bash", "TERM": "xterm"}}
+[0.019161, "o", "restore.sh syntax OK\r\n=== RESTORE (db is currently empty)\r\n"]
+[2.180029, "o", "restoring from: shop-2026-10-18.sql.gz\r\npod \"ls-backups\" deleted from shop namespace\r\n"]
+[2.265188, "o", "sed: -e expression #1, char 33: unterminated `s' command\r\n"]

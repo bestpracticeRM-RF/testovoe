@@ -1,0 +1,6 @@
+{"version": 2, "width": 80, "height": 24, "timestamp": 1792335064, "env": {"SHELL": "/bin/bash", "TERM": "xterm"}}
+[0.011119, "o", "--- README written\r\n"]
+[0.025579, "o", "check.sh: burst gate added\r\n"]
+[0.03637, "o", "--- run full gate:\r\n"]
+[129.764139, "o", "OK: 5 files, 12 docs parsed\r\n3 passed in 5.06s\r\n--- kubectl client dry-run:\r\nOK: apply dry-run clean\r\n201\r\n429\r\nGATE-PASSED\r\n"]
+[129.783588, "o", "4500c85 A18+A19: repo README (map/playbook), burst gate (0 5xx under 60-parallel) in CI gate\r\n11ec642 A17: backup restore drill, verified end-to-end (drop DB -> job restore from PVC -> 9 products, checkout 201)\r\nDONE-35\r\n"]
