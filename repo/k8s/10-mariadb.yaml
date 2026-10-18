@@ -50,7 +50,7 @@ spec:
       containers:
         - name: mariadb
           image: mariadb:11.4
-          args: ["--max-connections=28"]
+          args: ["--max-connections=50"]
           env:
             - name: MARIADB_ROOT_PASSWORD
               valueFrom: {secretKeyRef: {name: db, key: root-password}}
