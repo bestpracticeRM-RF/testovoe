@@ -1,0 +1,4 @@
+{"version": 2, "width": 80, "height": 24, "timestamp": 1792329840, "env": {"SHELL": "/bin/bash", "TERM": "xterm"}}
+[0.089476, "o", "deleting shop-595cf59b74-dtghb and capturing its final logs:\r\n"]
+[2.526057, "o", "mariadb-59764b44b7-5vmqh 1/1 Running\r\nshop-595cf59b74-d74dr 1/1 Running\r\nshop-595cf59b74-snzpv 1/1 Running\r\n"]
+[2.54536, "o", "products -> 200\r\n"]

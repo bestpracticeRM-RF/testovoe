@@ -13,9 +13,15 @@ spec:
       labels:
         app: shop
     spec:
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: ScheduleAnyway
+          labelSelector:
+            matchLabels: {app: shop}
       containers:
         - name: shop
-          image: shop:v3
+          image: shop:v5
           imagePullPolicy: Never
           env:
             - name: DB_PASSWORD
@@ -53,3 +59,14 @@ spec:
     - port: 80
       targetPort: 8800
       nodePort: 31994
+
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: shop
+  namespace: shop
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels: {app: shop}

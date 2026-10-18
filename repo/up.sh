@@ -19,16 +19,31 @@ kind load docker-image "$IMAGE" --name "$CLUSTER"
 if ! kubectl get ns shop >/dev/null 2>&1; then
   # Reproduce production history once: release v2 went out with the release config,
   # the on-call hotfix to shop-config was applied later.
-  kubectl apply -f k8s/00-namespace.yaml -f k8s/10-mariadb.yaml
+  kubectl apply -f k8s/00-namespace.yaml
+  # DB credentials: random, generated once, never stored in git (A8).
+  # Must exist BEFORE mariadb: pods resolve secretKeyRef at start.
+  if ! kubectl -n shop get secret db >/dev/null 2>&1; then
+    kubectl -n shop create secret generic db \
+      --from-literal=root-password="$(openssl rand -hex 12)" \
+      --from-literal=password="$(openssl rand -hex 12)"
+  fi
+  kubectl apply -f k8s/10-mariadb.yaml
   kubectl -n shop rollout status deploy/mariadb --timeout=300s
   kubectl apply -f .stand/app-config.release.yaml -f k8s/30-app.yaml
   kubectl -n shop wait pod -l app=shop --for=condition=Ready --timeout=300s
 fi
+# DB credentials: generated at first bring-up, never stored in git (A8)
+if ! kubectl -n shop get secret db >/dev/null 2>&1; then
+  kubectl -n shop create secret generic db \
+    --from-literal=root-password="$(openssl rand -hex 12)" \
+    --from-literal=password="$(openssl rand -hex 12)"
+fi
+
 kubectl apply -f k8s/
 
 docker build -q -t shop-edge:1 -f .stand/edge.Dockerfile .stand
 if ! docker inspect shop-edge >/dev/null 2>&1; then
-  docker run -d --name shop-edge --network kind -p "127.0.0.1:${EDGE_PORT}:80" shop-edge:1
+  docker run -d --name shop-edge --network kind -p "127.0.0.1:${EDGE_PORT}:80" -p "127.0.0.1:8443:443" shop-edge:1
 fi
 (cd ansible && ansible-playbook edge.yml)
 

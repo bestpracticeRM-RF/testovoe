@@ -1,0 +1,9 @@
+{"version": 2, "width": 80, "height": 24, "timestamp": 1792329616, "env": {"SHELL": "/bin/bash", "TERM": "xterm"}}
+[0.010512, "o", "=== [1] tools/check.sh — manifest lint + dry-run\r\n"]
+[0.02716, "o", "=== [2] .github/workflows/ci.yml\r\n"]
+[0.039056, "o", "=== [3] monitoring/alerts.yaml — the alert from REPORT §3.5, as prometheus rules\r\n"]
+[0.048203, "o", "=== [4] tools/watch.sh — poor-man watchdog (no prometheus on stand)\r\n"]
+[0.056607, "o", "=== [5] Test watchdog (2 iterations, 15s apart)\r\n"]
+[35.063206, "o", "13:20:32 ok    db_connections ratio=0.04 threads=2/50 pool in_use=0 idle=3\r\n13:20:47 ok    db_connections ratio=0.04 threads=2/50 pool in_use=0 idle=2\r\n"]
+[35.082407, "o", "8af42f4 A9+A10: CI gate (lint/dry-run/leak regression), prometheus alert rules, stand watchdog\r\ncfaeeef A8: move DB credentials out of git; up.sh generates random secret if absent\r\n"]
+[35.082932, "o", "DONE-16\r\n"]

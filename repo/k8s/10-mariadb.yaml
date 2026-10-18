@@ -1,13 +1,4 @@
 apiVersion: v1
-kind: Secret
-metadata:
-  name: db
-  namespace: shop
-stringData:
-  root-password: "f184ee6d692b2dc4"
-  password: "4de85e311d3aff00"
----
-apiVersion: v1
 kind: ConfigMap
 metadata:
   name: mariadb-init
@@ -72,7 +63,7 @@ spec:
         - name: init
           configMap: {name: mariadb-init}
         - name: data
-          emptyDir: {}
+          persistentVolumeClaim: {claimName: mariadb-data}
 ---
 apiVersion: v1
 kind: Service
@@ -84,3 +75,58 @@ spec:
     app: mariadb
   ports:
     - port: 3306
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mariadb-data
+  namespace: shop
+spec:
+  accessModes: [ReadWriteOnce]
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mariadb-backups
+  namespace: shop
+spec:
+  accessModes: [ReadWriteOnce]
+  resources:
+    requests:
+      storage: 2Gi
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: mariadb-backup
+  namespace: shop
+spec:
+  schedule: "17 3 * * *"
+  successfulJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: dump
+              image: mariadb:11.4
+              command: ["/bin/sh", "-c"]
+              args:
+                - >-
+                  mariadb-dump -hmariadb -ushop -p"$DB_PASSWORD" shop
+                  | gzip > /backups/shop-$(date +%F).sql.gz
+                  && find /backups -name '*.sql.gz' -mtime +7 -delete
+                  && ls -la /backups
+              env:
+                - name: DB_PASSWORD
+                  valueFrom: {secretKeyRef: {name: db, key: password}}
+              volumeMounts:
+                - {name: backups, mountPath: /backups}
+          volumes:
+            - name: backups
+              persistentVolumeClaim: {claimName: mariadb-backups}

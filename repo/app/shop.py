@@ -3,6 +3,7 @@ import json
 import logging
 import os
 import queue
+import signal
 import socket
 import threading
 import time
@@ -252,16 +253,45 @@ class Handler(BaseHTTPRequestHandler):
 def telemetry():
     target = os.environ.get("OTEL_ENDPOINT", "otel-collector.observability.svc.cluster.local:4317")
     host, port = target.rsplit(":", 1)
+    failures = 0
     while True:
         try:
             socket.create_connection((host, int(port)), timeout=2).close()
+            failures = 0
         except OSError as e:
-            log.error("telemetry: export failed to %s: %s (spans dropped: %d)", target, e, 512)
+            failures += 1
+            # unreachable dependency is expected noise, not an ERROR: log throttled
+            if failures == 1 or failures % 30 == 0:
+                log.warning("telemetry: export failed to %s: %s (x%d, spans dropped)", target, e, failures)
         time.sleep(20)
 
 
-if __name__ == "__main__":
+def main():
     threading.Thread(target=telemetry, daemon=True).start()
     port = CFG.getint("server", "port")
     log.info("shop starting on :%d, checkout_enabled=%s", port, FEATURES.get("checkout_enabled"))
-    ThreadingHTTPServer(("0.0.0.0", port), Handler).serve_forever()
+    server = ThreadingHTTPServer(("0.0.0.0", port), Handler)
+    server.daemon_threads = True
+    # default listen backlog is 5: parallel bursts overflow it -> edge 502
+    server.request_queue_size = 128
+
+    def shutdown(signum, frame):
+        log.info("signal %s received, shutting down", signum)
+        threading.Thread(target=server.shutdown, daemon=True).start()
+
+    signal.signal(signal.SIGTERM, shutdown)
+    signal.signal(signal.SIGINT, shutdown)
+    try:
+        server.serve_forever()
+    finally:
+        server.server_close()
+        while True:
+            try:
+                POOL.idle.get_nowait().close()
+            except queue.Empty:
+                break
+        log.info("shop stopped cleanly")
+
+
+if __name__ == "__main__":
+    main()

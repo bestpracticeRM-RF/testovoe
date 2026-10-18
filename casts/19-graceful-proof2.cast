@@ -1,0 +1,8 @@
+{"version": 2, "width": 80, "height": 24, "timestamp": 1792329907, "env": {"SHELL": "/bin/bash", "TERM": "xterm"}}
+[0.109092, "o", "pod: shop-595cf59b74-d74dr (grace 45s, log stream follows SIGTERM)\r\n"]
+[10.221153, "o", "--- captured log lines:\r\n"]
+[10.231648, "o", "2026-10-18 13:24:01,203Z INFO shop: shop starting on :8800, checkout_enabled=true\r\n2026-10-18 13:25:09,746Z INFO shop: signal 15 received, shutting down\r\n2026-10-18 13:25:09,811Z INFO shop: shop stopped cleanly\r\n"]
+[10.445291, "o", "mariadb-59764b44b7-5vmqh 1/1 Running\r\n"]
+[10.44551, "o", "shop-595cf59b74-2pvwg 1/1 Running\r\n"]
+[10.445607, "o", "shop-595cf59b74-snzpv 1/1 Running\r\n"]
+[10.461876, "o", "products -> 200\r\n"]

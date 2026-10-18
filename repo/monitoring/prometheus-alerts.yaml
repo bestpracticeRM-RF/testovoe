@@ -1,0 +1,25 @@
+# Alert that would have caught the 17.09 incident ~16 min before the outage.
+groups:
+  - name: shoplite
+    rules:
+      - alert: DBConnectionsNearLimit
+        expr: max(mysql_global_status_threads_connected) / max(mysql_global_variables_max_connections) > 0.70
+        for: 5m
+        labels: {severity: warning}
+        annotations:
+          summary: "DB connections >70% of max_connections for 5m"
+          runbook: "check SHOW PROCESSLIST for sleepers; app pool metrics /metrics shop_pool_*"
+      - alert: DBConnectionsCritical
+        expr: max(mysql_global_status_threads_connected) / max(mysql_global_variables_max_connections) > 0.85
+        for: 2m
+        labels: {severity: critical}
+      - alert: Edge5xxElevated
+        expr: sum(rate(shop_responses_total{code=~"5.."}[5m])) / sum(rate(shop_responses_total[5m])) > 0.10
+        for: 5m
+        labels: {severity: warning}
+        annotations:
+          summary: "edge 5xx >10% for 5m (incident lesson: '29% tail' was a stable failure)"
+      - alert: ShopPoolExhaustionTrend
+        expr: avg(shop_pool_in_use) >= 3.5 and avg(shop_pool_idle) < 0.5
+        for: 5m
+        labels: {severity: warning}
