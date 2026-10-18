@@ -1,6 +1,6 @@
 # Emulates the edge VM as it exists in production today. Not part of the task.
 FROM openresty/openresty:1.27.1.2-alpine
-RUN apk add --no-cache python3 openssl \
+RUN apk add --no-cache python3 openssl && apk upgrade --no-cache \
  && rm -f /etc/nginx/conf.d/default.conf \
  && mkdir -p /usr/local/openresty/nginx/conf/sites-enabled /etc/openresty/certs \
  && openssl req -x509 -newkey rsa:2048 -nodes -days 825 \

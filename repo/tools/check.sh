@@ -28,4 +28,10 @@ echo "$CODES"
 BAD=$(echo "$CODES" | grep -E '^(5..|000)$' || true)
 [ -z "$BAD" ] || { echo "BURST-GATE-FAILED: $BAD"; exit 1; }
 
+if command -v trivy >/dev/null; then
+  echo "--- trivy HIGH/CRITICAL (report-only):"
+  trivy image --quiet --severity HIGH,CRITICAL shop:v5 2>/dev/null | tail -5 || true
+  trivy image --quiet --severity HIGH,CRITICAL shop-edge:1 2>/dev/null | tail -4 || true
+fi
+
 echo "GATE-PASSED"

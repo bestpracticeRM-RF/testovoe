@@ -4,3 +4,7 @@ name: shoplite
 nodes:
   - role: control-plane
     image: kindest/node:v1.32.2
+  - role: worker
+    image: kindest/node:v1.32.2
+  - role: worker
+    image: kindest/node:v1.32.2

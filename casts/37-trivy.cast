@@ -1,0 +1,10 @@
+{"version": 2, "width": 80, "height": 24, "timestamp": 1792338455, "env": {"SHELL": "/bin/bash", "TERM": "xterm"}}
+[0.006074, "o", "=== [1] install trivy (binary)\r\n"]
+[0.332872, "o", "\r\ngzip: stdin: not in gzip format\r\ntar: Child returned status 1\r\ntar: Error is not recoverable: exiting now\r\n"]
+[0.336468, "o", "install: cannot stat '/tmp/trivy': No such file or directory\r\n"]
+[0.33834, "o", "/root/batch.sh: line 13: trivy: command not found\r\n"]
+[0.343347, "o", "=== [2] scan our images\r\n"]
+[0.355449, "o", "=== [3] wire into gate (report-only: fail would gate on upstream CVEs we do not control)\r\n"]
+[0.371372, "o", "check.sh: trivy step added\r\n"]
+[0.392391, "o", "cf9e9c3 A26: trivy HIGH/CRITICAL image scan in gate (report-only)\r\n0acfc03 A23+A24: drift detector (kubectl diff + ansible check), nightly self-check via cron (logs to casts/, 14d)\r\n"]
+[0.394103, "o", "DONE-37\r\n"]
