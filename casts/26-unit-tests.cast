@@ -1,0 +1,12 @@
+{"version": 2, "width": 80, "height": 24, "timestamp": 1792332845, "env": {"SHELL": "/bin/bash", "TERM": "xterm"}}
+[0.007046, "o", "=== [1] deps\r\n"]
+[38.587304, "o", "/usr/bin/python3: No module named pytest\r\n"]
+[38.589337, "o", "=== [2] tests/test_pool.py\r\n"]
+[38.600983, "o", "=== [3] run\r\n"]
+[38.619762, "o", "/usr/bin/python3: No module named pytest\r\n"]
+[38.621689, "o", "=== [4] wire into gate\r\n"]
+[38.637461, "o", "check.sh: pytest step added\r\n"]
+[38.651199, "o", "ci.yml: pytest deps\r\n"]
+[38.667638, "o", "661b66b A15: unit tests for pool (A5 leak regression, bounds, hot-reload); pytest in CI gate\r\n8561579 A14: raise listen backlog 5->128 (parallel burst at edge caused 502), image v5\r\n"]
+[38.748554, "o", "OK: 5 files, 12 docs parsed\r\n"]
+[38.749248, "o", "DONE-26\r\n"]

@@ -7,7 +7,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with: {python-version: '3.12'}
-      - run: pip install pyyaml
+      - run: pip install pyyaml pytest pymysql
       - name: Manifest gate (parse + regression load against ephemeral stand)
         run: |
           # full gate requires a running stand (up.sh); on CI we run the parse part,

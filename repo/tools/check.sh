@@ -13,6 +13,9 @@ for f in files:
         docs += 1
 print(f'OK: {len(files)} files, {docs} docs parsed')
 PY
+echo "--- unit tests (pool regression, no cluster needed):"
+python3 -m pytest tests/ -q
+
 echo "--- kubectl client dry-run:"
 kubectl apply --dry-run=client -f k8s/ >/dev/null && echo "OK: apply dry-run clean"
 echo "--- regression: 2 min load with invalid coupons must be 0 5xx:"

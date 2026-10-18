@@ -41,6 +41,9 @@ fi
 
 kubectl apply -f k8s/
 
+# observability layer (A16); optional — do not fail the bring-up on it
+kubectl apply -f monitoring/k8s/ || echo "monitoring apply failed, continuing"
+
 docker build -q -t shop-edge:1 -f .stand/edge.Dockerfile .stand
 if ! docker inspect shop-edge >/dev/null 2>&1; then
   docker run -d --name shop-edge --network kind -p "127.0.0.1:${EDGE_PORT}:80" -p "127.0.0.1:8443:443" shop-edge:1

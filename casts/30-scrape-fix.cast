@@ -1,0 +1,7 @@
+{"version": 2, "width": 80, "height": 24, "timestamp": 1792333337, "env": {"SHELL": "/bin/bash", "TERM": "xterm"}}
+[0.008961, "o", "19:          - targets: [\"shop.shop.svc.cluster.local:80\"]\r\n"]
+[27.447408, "o", "--- targets:\r\n"]
+[27.552647, "o", "http://localhost:9090/metrics up\r\nhttp://shop.shop.svc.cluster.local:80/metrics up\r\n"]
+[27.557672, "o", "--- query:\r\n"]
+[27.618817, "o", "{\"status\":\"success\",\"data\":{\"resultType\":\"vector\",\"result\":[{\"metric\":{\"__name__\":\"shop_pool_idle\",\"instance\":\"shop.shop.svc.cluster.local:80\",\"job\":\"shop\"},\"value\":[1792333364.675,\"4\"]}]}}"]
+[27.627974, "o", "\r\n"]

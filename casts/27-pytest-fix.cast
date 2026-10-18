@@ -1,0 +1,8 @@
+{"version": 2, "width": 80, "height": 24, "timestamp": 1792332945, "env": {"SHELL": "/bin/bash", "TERM": "xterm"}}
+[0.03106, "o", "17:pytest-3 tests/ -q\r\n"]
+[0.0318, "o", "--- run tests:\r\n"]
+[0.036015, "o", "/root/batch.sh: line 9: pytest-3: command not found\r\n"]
+[0.036511, "o", "--- full gate:\r\n"]
+[0.111613, "o", "OK: 5 files, 12 docs parsed\r\n"]
+[0.126015, "o", "5777bbc A15fix: use pytest-3 binary (Ubuntu)\r\n661b66b A15: unit tests for pool (A5 leak regression, bounds, hot-reload); pytest in CI gate\r\n"]
+[0.126933, "o", "DONE-27\r\n"]

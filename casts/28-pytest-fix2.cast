@@ -1,0 +1,10 @@
+{"version": 2, "width": 80, "height": 24, "timestamp": 1792332997, "env": {"SHELL": "/bin/bash", "TERM": "xterm"}}
+[0.009013, "o", "--- try apt verbosely:\r\n"]
+[10.119433, "o", "Setting up python3-pytest (9.0.2-4) ...\r\r\nProcessing triggers for man-db (2.13.1-1build1) ...\r\r\n"]
+[10.412364, "o", "pytest 9.0.2\r\n"]
+[10.481486, "o", "17:python3 -m pytest tests/ -q\r\n"]
+[10.481888, "o", "--- tests:\r\n"]
+[16.2682, "o", "...                                                                      [100%]\r\n3 passed in 5.06s\r\n"]
+[16.268763, "o", "--- gate:\r\n"]
+[145.191507, "o", "OK: 5 files, 12 docs parsed\r\n3 passed in 5.05s\r\n--- kubectl client dry-run:\r\nOK: apply dry-run clean\r\nGATE-PASSED\r\n"]
+[145.202217, "o", "DONE-28\r\n"]
