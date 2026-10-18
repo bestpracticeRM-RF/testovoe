@@ -14,9 +14,32 @@ logging.Formatter.converter = time.gmtime
 logging.basicConfig(level=logging.INFO, format="%(asctime)sZ %(levelname)s %(name)s: %(message)s")
 log = logging.getLogger("shop")
 
+CFG_PATH = os.environ.get("SHOP_CONFIG", "/etc/shop/shop.ini")
 CFG = configparser.ConfigParser()
-CFG.read(os.environ.get("SHOP_CONFIG", "/etc/shop/shop.ini"))
+CFG.read(CFG_PATH)
 FEATURES = CFG["features"]
+CFG_LOCK = threading.Lock()
+CFG_MTIME = [0.0]
+
+
+def reload_cfg_if_changed():
+    """Re-read the config file if its mtime changed (kubelet updates ConfigMap volumes)."""
+    try:
+        mtime = os.stat(CFG_PATH).st_mtime
+    except OSError:
+        return
+    if mtime == CFG_MTIME[0]:
+        return
+    parser = configparser.ConfigParser()
+    parser.read(CFG_PATH)
+    if not parser.has_section("features"):
+        return
+    global FEATURES
+    with CFG_LOCK:
+        CFG = parser
+        FEATURES = parser["features"]
+        CFG_MTIME[0] = mtime
+    log.info("config reloaded: checkout_enabled=%s", FEATURES.get("checkout_enabled"))
 
 
 def connect():
@@ -32,19 +55,32 @@ def connect():
     )
 
 
+class PoolExhausted(Exception):
+    pass
+
+
 class Pool:
+    """Bounded connection pool: never holds more than `size` open connections."""
+
     def __init__(self, size):
         self.size = size
         self.idle = queue.LifoQueue()
         self.in_use = set()
         self.lock = threading.Lock()
+        self.sem = threading.Semaphore(size)
 
     def get(self):
+        if not self.sem.acquire(timeout=5):
+            raise PoolExhausted()
         try:
-            conn = self.idle.get_nowait()
-            conn.ping(reconnect=True)
-        except queue.Empty:
-            conn = connect()
+            try:
+                conn = self.idle.get_nowait()
+                conn.ping(reconnect=True)
+            except queue.Empty:
+                conn = connect()
+        except BaseException:
+            self.sem.release()
+            raise
         with self.lock:
             self.in_use.add(conn)
         return conn
@@ -52,6 +88,7 @@ class Pool:
     def put(self, conn):
         with self.lock:
             self.in_use.discard(conn)
+        self.sem.release()
         try:
             conn.rollback()
         except pymysql.MySQLError:
@@ -149,6 +186,8 @@ class Handler(BaseHTTPRequestHandler):
     def products(self):
         try:
             conn = POOL.get()
+        except PoolExhausted as e:
+            return self.reply(503, {"error": str(e)})
         except pymysql.MySQLError as e:
             return self.reply(500, {"error": str(e)})
         try:
@@ -174,6 +213,7 @@ class Handler(BaseHTTPRequestHandler):
         self.wfile.write(data)
 
     def checkout(self):
+        reload_cfg_if_changed()
         if not FEATURES.getboolean("checkout_enabled", fallback=False):
             return self.reply(503, {"error": "checkout disabled"})
         try:
@@ -183,13 +223,15 @@ class Handler(BaseHTTPRequestHandler):
             return self.reply(400, {"error": "bad request"})
         try:
             conn = POOL.get()
+        except PoolExhausted as e:
+            return self.reply(503, {"error": str(e)})
         except pymysql.MySQLError as e:
             return self.reply(500, {"error": str(e)})
         try:
             cur = conn.cursor()
             total, problem = validate(cur, sku, qty, coupon)
             if problem:
-                conn.rollback()
+                POOL.put(conn)
                 log.info("checkout rejected: sku=%s qty=%s coupon=%s -> %s", sku, qty, coupon, problem[1]["error"])
                 return self.reply(*problem)
             cur.execute("UPDATE products SET stock = stock - %s WHERE sku=%s", (qty, sku))

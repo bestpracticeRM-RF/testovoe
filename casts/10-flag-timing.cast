@@ -1,0 +1,9 @@
+{"version": 2, "width": 80, "height": 24, "timestamp": 1792301277, "env": {"SHELL": "/bin/bash", "TERM": "xterm"}}
+[0.006649, "o", "--- raw grep reached/RESULT/PODS in cast file:\r\n"]
+[0.010334, "o", "RESULT false reached in 71s (HTTP 503)\\r\\n--- toggle false -> true (final state):\\r\\n\r\nRESULT true reached in 70s (HTTP 201)\\r\\n\r\n"]
+[0.014314, "o", "PODS-RESTARTED: mariadb-5db9d6dbf8-sc75r shop-7b89c4944-p9k8x shop-7b89c4944-s6rmp\\r\\n--- config reload lines in app logs:\\r\\n\r\n"]
+[0.017711, "o", "reached in 71s\r\nreached in 70s\r\n"]
+[0.018293, "o", "--- direct re-test now (fresh measurement, 1 toggle):\r\n"]
+[30.609186, "o", "DIRECT-RESULT false reached in 31s (HTTP 503)\r\n"]
+[116.158687, "o", "DIRECT-RESULT true reached in 85s (HTTP 201)\r\n"]
+[116.235662, "o", "PODS-NOT-RESTARTED\r\n"]

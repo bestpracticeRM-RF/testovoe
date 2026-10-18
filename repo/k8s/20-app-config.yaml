@@ -15,4 +15,4 @@ data:
     pool_size = 4
 
     [features]
-    checkout_enabled = false
+    checkout_enabled = true

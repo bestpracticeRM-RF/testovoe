@@ -12,13 +12,18 @@
     - name: Shop vhost
       ansible.builtin.template:
         src: shop.conf.j2
-        dest: /etc/nginx/conf.d/shop.conf
+        dest: /usr/local/openresty/nginx/conf/sites-enabled/shop.conf
         mode: "0644"
       notify: Reload openresty
 
     - name: Metrics allowlist
-      ansible.builtin.shell: echo "allow {{ item }};" >> /usr/local/openresty/nginx/conf/metrics-allow.conf
-      loop: "{{ metrics_allow }}"
+      ansible.builtin.copy:
+        dest: /usr/local/openresty/nginx/conf/metrics-allow.conf
+        mode: "0644"
+        content: |
+          {% for ip in metrics_allow %}
+          allow {{ ip }};
+          {% endfor %}
       notify: Reload openresty
 
   handlers:

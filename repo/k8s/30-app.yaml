@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: shop
-          image: shop:v2
+          image: shop:v3
           imagePullPolicy: Never
           env:
             - name: DB_PASSWORD
@@ -35,8 +35,7 @@ spec:
             limits: {memory: 256Mi}
           volumeMounts:
             - name: config
-              mountPath: /etc/shop/shop.ini
-              subPath: shop.ini
+              mountPath: /etc/shop
       volumes:
         - name: config
           configMap: {name: shop-config}
@@ -52,5 +51,5 @@ spec:
     app: shop
   ports:
     - port: 80
-      targetPort: 8000
+      targetPort: 8800
       nodePort: 31994
