@@ -21,23 +21,17 @@
 Паттерн работы из Windows (кавычки через cmd→wsl→ssh не вкладывать!): пишем скрипт в
 `C:\Users\btk\Documents\ai\тестовое\batch.sh` → `scp` на VPS → запуск (см. скил).
 
-## Архитектура стенда (краткая карта)
+## Архитектура стенда (краткая карта, состояние после A1–A19)
 
-`127.0.0.1:8080 → docker shop-edge (openresty, --network kind) → shoplite-control-plane:31994 (NodePort) → svc/shop 80→8800 → deploy/shop (shop:v3, 2 реплики, пул 4+семафор, hot-reload конфига) → svc/mariadb:3306 (mariadb:11.4, --max-connections=28, emptyDir — схема восстанавливается из CM mariadb-init).`
+`127.0.0.1:8080 (http) / :8443 (tls) → docker shop-edge (rate-limit /checkout→429) → shoplite-control-plane:31994 (NodePort) → svc/shop 80→8800 → deploy/shop (shop:v5, 2 реплики, пул 4+семафор, hot-reload конфига, graceful shutdown) → svc/mariadb:3306 (mariadb:11.4, max_connections=50, данные на PVC 5Gi, схема из CM mariadb-init; CronJob бэкапов + tools/restore.sh). ns monitoring: prometheus (:32300, правила алертов) + grafana (:32301, дашборд ShopLite). CI-гейт tools/check.sh: линт+unit+dry-run+нагрузка+бёрст.`
 
-Ansible `edge.yml`: vhost → `sites-enabled/shop.conf` (НЕ conf.d — там был баг A2), allowlist идемпотентен, повторный прогон = `changed=0`.
+Ansible `edge.yml`: vhost → `sites-enabled/shop.conf` (НЕ conf.d), upstream 31994 из `group_vars/edge.yml`, allowlist идемпотентен, повторный прогон = `changed=0`. Секрет `db` генерится up.sh (в git паролей нет).
 
-## Что уже починено в этапе 1 (не « чинить» повторно)
+Доступ к grafana с ПК: `ssh -L 32301:127.0.0.1:32301 root@201.51.6.26` → http://localhost:32301.
 
-| Фикс | Коммит |
-|---|---|
-| svc targetPort 8000→8800 | a669a4a |
-| vhost в sites-enabled + идемпотентный allowlist | 5ce6516 |
-| mount каталогом (без subPath) + hot-reload по mtime (флаг доезжает за 31–85 c без рестарта) | a60800a |
-| утечка пула на невалидных купонах + семафор (образ shop:v3) | abfd1c4 |
-| checkout_enabled=true (финальное состояние) | c980404 |
+## Что уже починено (этап 1, не «чинить» повторно)
 
-Критерии этапа 1: load.py 600s — exit 0, 0 5xx (~9000 запросов, p99 0.05с); ansible changed=0; флаг доезжает без рестарта; checkout 201.
+A1 targetPort 8800 · A2 vhost sites-enabled + идемпотентность · A3 no-subPath + hot-reload (31–85с без рестарта) · A5 утечка пула + семафор (v3) · A4 checkout=true · далее укрепление A6–A19: max_conn 50, PVC+бэкапы+restore-drill, секреты вне git, CI-гейт (unit+load+burst), прометей+графана, spread+PDB, graceful shutdown, TLS:8443, rate-limit→429, backlog 128 (v5), README. Полный down/up цикл воспроизводим (~6 мин). Критерии: load 600s exit 0 (каст 25), changed=0, флаг доезжает, checkout 201.
 
 ## Инцидент 17.09 — суть (полный разбор в REPORT.md)
 
