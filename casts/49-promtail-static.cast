@@ -1,0 +1,11 @@
+{"version": 2, "width": 80, "height": 24, "timestamp": 1792383361, "env": {"SHELL": "/bin/bash", "TERM": "xterm"}}
+[0.027303, "o", "promtail: static globs\r\n"]
+[0.099359, "o", "yaml ok, 5 docs\r\n"]
+[17.737606, "o", "--- positions sizes per promtail:\r\n"]
+[17.813958, "o", "/root/batch.sh: line 34: /tmp/positions.yaml: No such file or directory\r\n"]
+[17.814526, "o", "shoplite-worker/promtail-dcqtm:  bytes\r\n"]
+[17.896498, "o", "/root/batch.sh: line 34: /tmp/positions.yaml: No such file or directory\r\n"]
+[17.897325, "o", "shoplite-worker2/promtail-5ms7q:  bytes\r\n"]
+[28.035566, "o", "--- loki {app=\"shop\"}:\r\n"]
+[28.114725, "o", "{'app': 'shop', 'detected_level': 'info', 'filename': '/var/log/pods/shop_shop-845b8b5f47-2hz96_f87cf457-7ef1-4daf-b1cb-52f50f9c90c1/shop/2.log', 'namespace': 'shop', 'service_name': 'shop'} -> 2026-10-19T04:16:19.761315751Z stderr F 2026-10-19 04:16:19,760Z INFO shop: checkout rejec\r\n"]
+[28.120527, "o", "DONE\r\n"]

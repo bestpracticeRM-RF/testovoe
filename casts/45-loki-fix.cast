@@ -1,0 +1,6 @@
+{"version": 2, "width": 80, "height": 24, "timestamp": 1792382679, "env": {"SHELL": "/bin/bash", "TERM": "xterm"}}
+[0.023492, "o", "promtail: pipeline removed (plain-text logs)\r\n"]
+[5.15065, "o", "--- generate log lines (checkout rejections + telemetry):\r\n"]
+[20.277468, "o", "--- loki query {app=\"shop\"}:\r\n"]
+[20.356525, "o", "still empty\r\n"]
+[20.361381, "o", "DONE\r\n"]

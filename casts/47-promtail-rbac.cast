@@ -1,0 +1,8 @@
+{"version": 2, "width": 80, "height": 24, "timestamp": 1792382914, "env": {"SHELL": "/bin/bash", "TERM": "xterm"}}
+[0.018019, "o", "promtail: RBAC added\r\n"]
+[24.644523, "o", "--- promtail errors?\r\n"]
+[24.723188, "o", "0\r\n"]
+[24.724385, "o", "0\r\n"]
+[24.724413, "o", "--- generate + query:\r\n"]
+[36.895283, "o", "STILL EMPTY\r\n"]
+[36.90231, "o", "DONE\r\n"]

@@ -12,6 +12,10 @@ data:
         access: proxy
         url: http://prometheus.monitoring.svc.cluster.local:9090
         isDefault: true
+      - name: loki
+        type: loki
+        access: proxy
+        url: http://loki.monitoring.svc.cluster.local:3100
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -43,6 +47,8 @@ data:
         "targets": [{"expr": "shop_pool_idle"}]},
        {"type": "timeseries", "title": "responses/s by code", "gridPos": {"x":8,"y":0,"w":8,"h":8},
         "targets": [{"expr": "sum by (code) (rate(shop_responses_total[1m]))"}]},
+       {"type": "logs", "title": "app logs (loki)", "gridPos": {"x":0,"y":8,"w":16,"h":6},
+        "targets": [{"expr": "{app=\"shop\"}", "datasource": {"type": "loki", "uid": "loki"}}]},
        {"type": "timeseries", "title": "5xx/s (must be 0)", "gridPos": {"x":0,"y":4,"w":8,"h":4},
         "targets": [{"expr": "sum(rate(shop_responses_total{code=~\"5..\"}[1m]))"}]}
      ],

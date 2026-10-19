@@ -1,0 +1,7 @@
+{"version": 2, "width": 80, "height": 24, "timestamp": 1792383133, "env": {"SHELL": "/bin/bash", "TERM": "xterm"}}
+[0.015588, "o", "promtail: explicit __path__ relabel\r\n"]
+[20.887563, "o", "--- positions of promtail-nrd5b:\r\n"]
+[20.996971, "o", "positions: {}\r\n"]
+[41.127246, "o", "--- loki query {app=\"shop\"}:\r\n"]
+[41.219384, "o", "STILL EMPTY\r\n"]
+[41.225029, "o", "DONE\r\n"]
