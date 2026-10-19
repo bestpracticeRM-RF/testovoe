@@ -1,0 +1,5 @@
+{"version": 2, "width": 80, "height": 24, "timestamp": 1792397319, "env": {"SHELL": "/bin/bash", "TERM": "xterm"}}
+[4.562799, "o", "KEEPALIVE via edge /products: p50=45.0ms p99=50.3ms  (new-conn was ~45ms p50)\r\n"]
+[8.873611, "o", "KEEPALIVE via edge /healthz: p50=42.9ms p99=45.6ms  (new-conn was ~45ms p50)\r\n"]
+[8.946367, "o", "ca0ee9c A30: latency breakdown tool + findings (app ~8ms, DB ~2ms, edge ~0, ~35ms = conn setup via NodePort; keepalive kills it)\r\n3dea3c6 A29: DB audit — OLTP queries all PK-perfect, slowlog empty under load; bi query (GROUP BY DATE(created_at)) full-scans by optimizer choice: plain AND functional index not chosen at 6k rows (EXPLAIN evidence). Index kept for range queries; prod fix = pre-aggregation. In-session timings recorded\r\n"]
+[8.948027, "o", "DONE-61\r\n"]
