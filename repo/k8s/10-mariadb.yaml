@@ -8,6 +8,7 @@ data:
     CREATE TABLE products (sku VARCHAR(32) PRIMARY KEY, name VARCHAR(100), price INT NOT NULL, stock INT NOT NULL);
     CREATE TABLE coupons (code VARCHAR(32) PRIMARY KEY, discount INT NOT NULL, active TINYINT NOT NULL);
     CREATE TABLE orders (id BIGINT AUTO_INCREMENT PRIMARY KEY, sku VARCHAR(32), qty INT, coupon VARCHAR(32),
+                         INDEX idx_orders_created (created_at),
                          total INT, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP);
     INSERT INTO products VALUES
       ('SKU-9538', 'Коврик для мыши', 1950, 1000000),

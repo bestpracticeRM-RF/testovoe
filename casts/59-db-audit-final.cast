@@ -1,0 +1,8 @@
+{"version": 2, "width": 80, "height": 24, "timestamp": 1792390562, "env": {"SHELL": "/bin/bash", "TERM": "xterm"}}
+[0.007164, "o", "=== ANALYZE + forced index EXPLAIN:\r\n"]
+[0.235187, "o", "Table\tOp\tMsg_type\tMsg_text\r\nshop.orders\tanalyze\tstatus\tOK\r\nid\tselect_type\ttable\ttype\tpossible_keys\tkey\tkey_len\tref\trows\tExtra\r\n1\tSIMPLE\torders\tALL\tNULL\tNULL\tNULL\tNULL\t6164\tUsing temporary; Using filesort\r\nid\tselect_type\ttable\ttype\tpossible_keys\tkey\tkey_len\tref\trows\tExtra\r\n1\tSIMPLE\torders\tALL\tNULL\tNULL\tNULL\tNULL\t6164\tUsing temporary; Using filesort\r\n"]
+[0.254552, "o", "=== true in-session timing (3 runs each, no exec overhead):\r\n"]
+[0.449314, "o", "day\tSUM(total)\r\nDATE(created_at)\tSUM(total)\r\nSUM(total)\r\nStatus\tDuration\r\n"]
+[0.450196, "o", "=== final honest commit message\r\n"]
+[0.48096, "o", "3dea3c6 A29: DB audit — OLTP queries all PK-perfect, slowlog empty under load; bi query (GROUP BY DATE(created_at)) full-scans by optimizer choice: plain AND functional index not chosen at 6k rows (EXPLAIN evidence). Index kept for range queries; prod fix = pre-aggregation. In-session timings recorded\r\n0c591a8 A28: e2e tests for the live stand (catalog, checkout paths, rejections, metrics), auto-skip when down\r\n"]
+[0.482445, "o", "DONE-59\r\n"]

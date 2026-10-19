@@ -1,0 +1,12 @@
+{"version": 2, "width": 80, "height": 24, "timestamp": 1792390406, "env": {"SHELL": "/bin/bash", "TERM": "xterm"}}
+[0.006582, "o", "=== [1] replace plain index with generated column + index\r\n"]
+[0.299944, "o", "--- EXPLAIN GROUP BY DATE(created_at) (original bi query text):\r\n"]
+[0.482492, "o", "id\tselect_type\ttable\ttype\tpossible_keys\tkey\tkey_len\tref\trows\tExtra\r\n1\tSIMPLE\torders\tALL\tNULL\tNULL\tNULL\tNULL\t6164\tUsing temporary; Using filesort\r\n"]
+[0.492904, "o", "--- EXPLAIN GROUP BY day (rewritten):\r\n"]
+[0.656126, "o", "id\tselect_type\ttable\ttype\tpossible_keys\tkey\tkey_len\tref\trows\tExtra\r\n1\tSIMPLE\torders\tALL\tNULL\tNULL\tNULL\tNULL\t6164\tUsing temporary; Using filesort\r\n"]
+[0.887897, "o", "rewritten query time: 217 ms\r\n"]
+[1.131155, "o", "original text time:   235 ms\r\n=== [2] persist in schema (honest version)\r\n"]
+[1.321032, "o", "Traceback (most recent call last):\r\n  File \u001b[35m\"<stdin>\"\u001b[0m, line \u001b[35m8\u001b[0m, in \u001b[35m<module>\u001b[0m\r\n\u001b[1;35mAssertionError\u001b[0m: \u001b[35mschema line not found\u001b[0m\r\n"]
+[1.36326, "o", "0249ad8 A29: orders.day DATE generated column + functional index (GROUP BY DATE(created_at)); plain index was NOT usable for GROUP BY of an expression — caught by EXPLAIN\r\n0c591a8 A28: e2e tests for the live stand (catalog, checkout paths, rejections, metrics), auto-skip when down\r\n"]
+[1.569641, "o", "products -> 200\r\n"]
+[1.570211, "o", "DONE-58\r\n"]
