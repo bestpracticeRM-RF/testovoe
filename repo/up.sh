@@ -41,6 +41,15 @@ fi
 
 kubectl apply -f k8s/
 
+# mysqld-exporter (A27) needs the db secret in monitoring ns
+if kubectl -n shop get secret db >/dev/null 2>&1; then
+  kubectl -n shop get secret db -o json | python3 -c "
+import json,sys
+d = json.load(sys.stdin)
+d['metadata'] = {'name': 'db', 'namespace': 'monitoring'}
+json.dump(d, sys.stdout)" | kubectl apply -f - >/dev/null 2>&1 || true
+fi
+
 # observability layer (A16); optional — do not fail the bring-up on it
 kubectl apply -f monitoring/k8s/ || echo "monitoring apply failed, continuing"
 

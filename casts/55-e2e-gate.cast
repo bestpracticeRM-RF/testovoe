@@ -1,0 +1,7 @@
+{"version": 2, "width": 80, "height": 24, "timestamp": 1792386163, "env": {"SHELL": "/bin/bash", "TERM": "xterm"}}
+[0.014091, "o", "--- run all tests (unit + e2e):\r\n"]
+[5.869813, "o", "=========================== short test summary info ============================\r\nFAILED tests/test_e2e.py::test_metrics_exposed - json.decoder.JSONDecodeError...\r\n1 failed, 8 passed in 5.34s\r\n"]
+[5.889773, "o", "--- full gate:\r\n"]
+[11.745605, "o", "OK: 7 files, 22 docs parsed\r\n1 failed, 8 passed in 5.32s\r\n"]
+[11.753967, "o", "01893ee A28: e2e tests for the live stand (catalog, checkout paths, business rejections), auto-skip when stand is down\r\nf8b34f0 A27: mysqld-exporter v0.14.0 + evaluation_interval 15s (fast alert pickup)\r\n"]
+[11.756005, "o", "DONE-55\r\n"]

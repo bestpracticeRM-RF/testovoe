@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: {name: mysqld-exporter, namespace: monitoring}
+spec:
+  replicas: 1
+  selector: {matchLabels: {app: mysqld-exporter}}
+  template:
+    metadata: {labels: {app: mysqld-exporter}}
+    spec:
+      containers:
+        - name: exporter
+          image: prom/mysqld-exporter:v0.14.0
+          env:
+            - name: MARIADB_ROOT_PASSWORD
+              valueFrom: {secretKeyRef: {name: db, key: root-password}}
+            - name: DATA_SOURCE_NAME
+              value: "root:$(MARIADB_ROOT_PASSWORD)@(mariadb.shop.svc.cluster.local:3306)/"
+          ports: [{containerPort: 9104}]
+          resources: {requests: {cpu: 10m, memory: 32Mi}, limits: {memory: 128Mi}}
+---
+apiVersion: v1
+kind: Service
+metadata: {name: mysqld-exporter, namespace: monitoring}
+spec:
+  selector: {app: mysqld-exporter}
+  ports: [{port: 9104}]

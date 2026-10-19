@@ -1,0 +1,12 @@
+{"version": 2, "width": 80, "height": 24, "timestamp": 1792385786, "env": {"SHELL": "/bin/bash", "TERM": "xterm"}}
+[0.428691, "o", "Waiting for deployment \"mysqld-exporter\" rollout to finish: 1 old replicas are pending termination...\r\n"]
+[5.134893, "o", "Waiting for deployment \"mysqld-exporter\" rollout to finish: 1 old replicas are pending termination...\r\n"]
+[5.200346, "o", "Waiting for deployment \"mysqld-exporter\" rollout to finish: 1 old replicas are pending termination..."]
+[5.200708, "o", "\r\n"]
+[5.308775, "o", "deployment \"mysqld-exporter\" successfully rolled out\r\n"]
+[30.426371, "o", "http://mysqld-exporter.monitoring.svc.cluster.local:9104/metrics up\r\nhttp://localhost:9090/metrics up\r\nhttp://shop.shop.svc.cluster.local:80/metrics up\r\n"]
+[30.518829, "o", "threads_connected: 7\r\n"]
+[30.524104, "o", "=== ALERT DEMO\r\n"]
+[65.819988, "o", "no active alerts\r\n"]
+[78.020701, "o", "products -> 200\r\n"]
+[78.021209, "o", "DONE\r\n"]

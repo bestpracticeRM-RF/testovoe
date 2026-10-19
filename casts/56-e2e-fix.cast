@@ -1,0 +1,5 @@
+{"version": 2, "width": 80, "height": 24, "timestamp": 1792386215, "env": {"SHELL": "/bin/bash", "TERM": "xterm"}}
+[0.021915, "o", "e2e: plain-text tolerant\r\n"]
+[5.809044, "o", ".........                                                                [100%]\r\n9 passed in 5.29s\r\n"]
+[136.844157, "o", "OK: 7 files, 22 docs parsed\r\n9 passed in 5.31s\r\nGATE-PASSED\r\n"]
+[136.844969, "o", "DONE\r\n"]

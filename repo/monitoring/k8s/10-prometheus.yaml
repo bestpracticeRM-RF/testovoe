@@ -12,6 +12,7 @@ data:
   prometheus.yml: |
     global:
       scrape_interval: 15s
+      evaluation_interval: 15s
     rule_files: [/etc/prometheus/rules/*.yaml]
     scrape_configs:
       - job_name: shop
@@ -20,6 +21,9 @@ data:
       - job_name: prometheus
         static_configs:
           - targets: ["localhost:9090"]
+      - job_name: mariadb
+        static_configs:
+          - targets: ["mysqld-exporter.monitoring.svc.cluster.local:9104"]
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -43,8 +47,16 @@ data:
             labels: {severity: warning}
             annotations:
               summary: "pool nearly exhausted: in_use high, idle ~0"
-          # DB ratio alert (threads_connected/max_connections > 0.7) requires
-          # mysqld_exporter — see monitoring/prometheus-alerts.yaml, not scrapable here.
+          - alert: DBConnectionsNearLimit
+            expr: max(mysql_global_status_threads_connected) / max(mysql_global_variables_max_connections) > 0.70
+            for: 5m
+            labels: {severity: warning}
+            annotations:
+              summary: "DB connections >70% of max_connections for 5m (the 17.09 incident alert)"
+          - alert: DBConnectionsCritical
+            expr: max(mysql_global_status_threads_connected) / max(mysql_global_variables_max_connections) > 0.85
+            for: 2m
+            labels: {severity: critical}
 ---
 apiVersion: apps/v1
 kind: Deployment
