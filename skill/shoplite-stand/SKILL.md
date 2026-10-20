@@ -5,9 +5,9 @@ description: Run and debug the ShopLite DevOps test stand (stage 2 live-debuggin
 
 # ShopLite stand: operation and live-debug playbook
 
-Test assignment stand (DevOps, two-stage). Stage 1 submitted; stand hardened through A6–A19.
+Test assignment stand (DevOps, two-stage). Stage 1 submitted; hardening through A31.
 Stage 2 = they send ONE command that breaks the stand; find and fix while narrating
-**гипотеза → команда → вывод → заключение** in the chat. This file is the map + playbook.
+**гипотеза → команда → вывод → заключение** in the chat.
 
 ## Access chain (Windows → WSL → VPS)
 
@@ -16,91 +16,119 @@ wsl -d Ubuntu-26.04 -- bash -lc "ssh root@201.51.6.26 '<command>'"
 ```
 
 - VPS `root@201.51.6.26`, key in WSL `~/.ssh/id_ed25519`. Work dir: `~/shoplite-work` (repo, casts/, REPORT.md, TASK.md, ~/vps-runner.sh).
-- NEVER nest quotes through cmd→wsl→ssh. Write script to `C:\Users\btk\Documents\ai\тестовое\batch.sh`, then `wsl … "scp -q /mnt/c/Users/btk/Documents/ai/тестовое/batch.sh root@201.51.6.26: && ssh root@201.51.6.26 'bash ~/batch.sh'"`.
-- Recording: `ssh … 'bash ~/vps-runner.sh <NN-name>'` runs `~/batch.sh` under asciinema into `casts/`. Always `export TERM=xterm PAGER=cat GIT_PAGER=cat` (less hangs recordings).
-- Grafana/prometheus from user PC: `ssh -L 32301:127.0.0.1:32301 -L 32300:127.0.0.1:32300 root@201.51.6.26` → http://localhost:32301 (dashboard ShopLite), :32300/alerts.
-- Mirror: github.com/bestpracticeRM-RF/testovoe (push from WSL `~/shoplite-work`).
+- NEVER nest quotes through cmd→wsl→ssh: write `C:\Users\btk\Documents\ai\тестовое\batch.sh`, then `wsl … "scp -q …/batch.sh root@201.51.6.26: && ssh root@201.51.6.26 'bash ~/batch.sh'"`.
+- Recording: `ssh … 'bash ~/vps-runner.sh <NN-name>'` (asciinema → casts/, `--overwrite` to redo). Always `export TERM=xterm PAGER=cat GIT_PAGER=cat`.
+- UI port-forwards from user PC: `ssh -L 32301:127.0.0.1:32301 -L 32300:127.0.0.1:32300 -L 32302:127.0.0.1:32302 root@201.51.6.26`.
+- Mirror: github.com/bestpracticeRM-RF/testovoe (push from WSL via `wsl-final.sh`).
 
-## Topology (current, after A1–A19)
+## Topology (after A1–A31)
 
 ```
-client → 127.0.0.1:8080 (http) / :8443 (tls, self-signed, A13)
-  → docker shop-edge (openresty; rate-limit /checkout 10r/s burst20 → 429; allowlist /metrics)
-  → shoplite-control-plane:31994 (NodePort) → svc/shop 80 → targetPort 8800
-  → deploy/shop ×2 (image shop:v5: bounded pool 4+semaphore, hot-reload config by mtime,
-     graceful SIGTERM, listen backlog 128, throttled telemetry)
-  → svc/mariadb:3306 → deploy/mariadb (max_connections=50, DATA ON PVC mariadb-data 5Gi,
-     schema from CM mariadb-init on first mount)
-monitoring ns: prometheus (scrapes shop via svc:80, NodePort 32300, alert rules loaded)
-               grafana (dashboard ShopLite, NodePort 32301, anonymous)
-backups: CronJob mariadb-backup daily 03:17 UTC → PVC mariadb-backups, 7d retention;
-         restore: `bash tools/restore.sh` (verified end-to-end: drop → restore → 9 products)
-CI gate: `bash tools/check.sh` = yaml lint + unit tests (pool regression, ~5s) + dry-run
-         + 2-min load (0 5xx) + burst gate (60 parallel, 0 5xx) → GATE-PASSED
+client → 127.0.0.1:8080 (http) / :8443 (tls)
+  → docker shop-edge (openresty, --restart unless-stopped; rate-limit /checkout 10r/s→429)
+  → shoplite-control-plane:31994 (NodePort) → svc/shop 80→8800
+  → deploy/shop ×2 (shop:v5: bounded pool 4+semaphore, hot-reload config by mtime,
+     graceful SIGTERM, backlog 128) + HPA 2–6 (cpu 60%) + spread + PDB
+  → svc/mariadb:3306 (max_connections=50, PVC mariadb-data 5Gi, daily mysqldump
+     CronJob → PVC mariadb-backups, restore: tools/restore.sh, drill-proven)
+kind: 1 control-plane + 2 workers (chaos-tested: node kill → 200s after ~40s detect window)
+monitoring ns: prometheus :32300 (rules: 5xx, pool, DB ratio — LIVE via mysqld-exporter),
+  grafana :32301 (dashboard: metrics + loki logs panel), loki :32303, promtail (static globs)
+argocd ns: Application shop ← GitHub repo/k8s. AUTOMATION DISABLED after demo
+  (spec.syncPolicy.automated=null) — for stage-2 safety. UI :32302, admin/XETYkuiWVtkaGkfi.
+tools: check.sh (lint+unit+e2e 9 tests+2min load+burst+trivy → GATE-PASSED),
+  drift.sh (kubectl diff + ansible --check), nightly.sh (cron 03:33 UTC, logs to casts/),
+  restore.sh, bench_latency.py, watch.sh
 ```
 
-Key ports: **8080** edge http, **8443** edge tls, **31994** NodePort (hardcoded in edge group_vars!), 8800 app, 3306 db, **32300** prometheus, **32301** grafana.
+Latency truth (A30): app ~8ms, DB ~2ms, edge ~0ms; ~35ms = NodePort NAT hop (kind artifact;
+prod fix = in-cluster L7 gateway (Gateway API/Envoy) with direct pod routing — say this on stage 2, don't build it).
 
-## What is already fixed/done — do NOT "refix" (A1–A19, 28+ commits)
+## Already fixed/done — do NOT "refix" (A1–A31, ~42 commits)
 
-targetPort 8800 (a669a4a) · vhost→sites-enabled+idempotent allowlist (5ce6516) · no-subPath+hot-reload (a60800a) · pool leak+semaphore (abfd1c4) · checkout=true (c980404) · max_connections 50 (715d19) · PVC+backups (cf6fff) · secrets out of git, up.sh generates (faeeef+fixes) · CI gate (3af42f4) · alert rules+watchdog · spread+PDB · telemetry throttle+graceful (v4) · TLS+rate-limit (d5f2920/bf5aad) · backlog 128 (v5) · unit tests (661b66b) · prometheus+grafana (A16+fix) · restore drill (1ec642) · README+burst gate (500c85).
+Core (graded): targetPort 8800 (a669a4a) · vhost→sites-enabled+idempotent allowlist (5ce6516) ·
+no-subPath+hot-reload (a60800a) · pool leak+semaphore (abfd1c4) · checkout=true (c980404).
+Hardening (§2b, "вне критериев"): max_conn 50 · PVC+backups+restore · secrets out of git (up.sh
+generates; **must be created BEFORE mariadb apply** — CreateContainerConfigError otherwise) ·
+CI gate · alert rules+watchdog · spread+PDB · graceful+telemetry-throttle (v4) · TLS+rate-limit ·
+backlog 128 (v5) · unit tests · prometheus+grafana · loki+promtail · ArgoCD (suspended) ·
+3-node+chaos · HPA · drift/nightly · trivy (edge 12→1 HIGH) · mysqld-exporter+live DB alerts ·
+e2e (9 tests) · DB audit (OLTP all-PK, slowlog empty; bi query = optimizer-chosen full scan,
+prod fix = pre-aggregation) · edge --restart unless-stopped (reboot-proven).
 
-Secret `db`: generated by up.sh on first bring-up (random) — if deleted, recreate the same way (see up.sh), pods must restart to pick it up.
+Secret `db`: generated by up.sh; mysqld-exporter needs its COPY in monitoring ns (up.sh syncs it).
 
 ## Diagnostic playbook by symptom
 
-Every case in chat: hypothesis sentence → command → output snippet → conclusion. Fix = repo commit + `kubectl apply` / `ansible-playbook edge.yml`, never live-object edits.
+Every case in chat: hypothesis → command → output snippet → conclusion. Fix = repo commit + apply/ansible.
 
 ### 502 from edge
-1. `docker logs shop-edge --tail 20` → `ua=` shows real upstream.
-2. `docker exec shoplite-control-plane curl -s -o /dev/null -w '%{http_code}\n' http://127.0.0.1:31994/products` — node ok?
-   - node ok + edge 502 → edge config drift: `openresty -T | grep -E 'server shoplite|listen'` vs repo (upstream_port 31994 in `ansible/group_vars/edge.yml`) → `ansible-playbook edge.yml`.
-   - node fails → `kubectl -n shop get endpoints shop` (expect two :8800), `get svc` (targetPort 8800, nodePort 31994), pods ready.
-3. Rate-limit is NOT 502: bursts on /checkout give **429 — норма** (10r/s, burst 20).
+1. `docker logs shop-edge --tail 20` (`ua=` shows real upstream).
+2. `docker exec shoplite-control-plane curl -s -o /dev/null -w '%{http_code}\n' http://127.0.0.1:31994/products`
+   - node ok + edge 502 → edge config drift: `openresty -T | grep server` vs repo (`group_vars/edge.yml` port 31994) → `ansible-playbook edge.yml`.
+   - node fails → `kubectl -n shop get endpoints` (two :8800), svc targetPort 8800/nodePort 31994, pods ready.
+3. **429 on /checkout = rate limit, норма** (10r/s, burst 20). 5xx — нет.
 
 ### 500 from app
-`kubectl -n shop logs deploy/shop --tail=30` (ignore throttled telemetry WARNINGs):
-- `(1040 Too many connections)` → `SHOW PROCESSLIST` **до** любых рестартов; KILL sleepers; check `max_connections=50` (`SHOW VARIABLES`); if image≠v5 → repo `30-app.yaml` + apply (old images leak).
-- `PoolExhausted` 503 → pool saturated: /metrics `shop_pool_*`, check for stuck conns.
-- Rollout stuck with old pods terminating → leaked conns live in old pods: delete old pods to release.
+`kubectl -n shop logs deploy/shop --tail=30` (telemetry WARNING throttled — noise):
+- `(1040 Too many connections)` → `SHOW PROCESSLIST` **до** рестартов; KILL sleepers; image==v5?; `SHOW VARIABLES max_connections` (50).
+- `PoolExhausted` 503 → /metrics `shop_pool_*`.
+- Rollout stuck → delete old pods (leaked conns live there).
+- DB wiped → `bash tools/restore.sh`.
+- Check live alerts: `curl -s localhost:32300/api/v1/query?query=ALERTS` (pending/firing).
 
-### checkout 503 "checkout disabled"
-CM flipped: `kubectl -n shop get cm shop-config -o jsonpath='{.data.shop\.ini}'` vs repo `20-app-config.yaml` → apply → ~30–90 s (kubelet sync + mtime hot-reload, log `config reloaded: …`) → 201.
+### checkout 503 disabled
+CM vs repo `20-app-config.yaml` → apply → ~30–90с (`config reloaded` in logs) → 201.
 
-### Data / mariadb
-- mariadb pod deleted → PVC keeps data; schema+catalog survive (verified).
-- DB wiped/corrupted → `bash tools/restore.sh` (job restores newest dump from PVC; drill-proven).
-- Backup CronJob: `kubectl -n shop get jobs,cronjob`; dumps on PVC `mariadb-backups`.
+### Node down
+~40s window of 000s (dead pod still in endpoints) → endpoints prune → survivor serves 200s. Node back → Ready. Normal.
 
-### Observability checks (fast truth)
+### 8080/8443 dead entirely
+`docker ps | grep shop-edge` → `docker start shop-edge` (up.sh has full docker run with --restart unless-stopped, ports 8080+8443).
+
+### Quick truth panel
 ```
 curl -s 127.0.0.1:8080/metrics | grep -E 'shop_pool|code="5'
-docker exec shoplite-control-plane curl -s 127.0.0.1:32300/api/v1/targets | grep -o '"health":"[a-z]*"'
+kubectl -n shop get pods,svc,endpoints -o wide
 docker exec shoplite-control-plane curl -s 127.0.0.1:32300/-/healthy
 kubectl -n monitoring get pods
+bash ~/shoplite-work/repo/tools/drift.sh   # exit 0 = no drift
 ```
 
-### 8080/8443 refuses connection
-`docker ps | grep shop-edge` → `docker start shop-edge` (recreate cmd in up.sh: ports 8080:80 AND 8443:443, `--network kind`).
+## ArgoCD on stage 2
 
-## Environment pitfalls (burned already)
+Automation DISABLED (`spec.syncPolicy.automated=null`) — it will NOT fight live debugging.
+If asked about GitOps: demo = live CM patch was self-healed in ~20s (cast 50).
+Resume automation: `kubectl -n argocd patch application shop --type=merge -p '{"spec":{"syncPolicy":{"automated":{"prune":true,"selfHeal":true}}}}'`.
 
-kind stable only (v0.33; "latest" alpha hangs "Ensuring node image") · docker build needs buildx (`COPY --chmod`) · PAGER=cat in recordings · WSL mirrored networking in `C:\Users\btk\.wslconfig` (VPN blocks NAT otherwise) — do not remove · asciinema `--overwrite` to re-record · kubectl `create job --from` + custom command = error (write a Job manifest) · unquoted heredocs expand `$VARS` in host shell (use `<<'EOF'`) · `kubectl run --rm -i` output contains extra lines — parse by strict pattern · VPS logs UTC; incident Slack = Europe/Moscow (UTC+3).
+## Environment pitfalls (all burned, all in casts)
+
+kind stable only (v0.33; "latest" alpha hangs) · docker build needs buildx · PAGER=cat in recordings ·
+WSL mirrored networking in `.wslconfig` (VPN blocks NAT) — keep · `create job --from` + command = error
+(write Job manifest) · unquoted heredoc eats `$VARS` (use `<<'EOF'`) · `kubectl run --rm -i` output has
+extra lines — parse by strict pattern · secretKeyRef is namespace-local (copy secret) ·
+mysqld-exporter v0.15 dropped DATA_SOURCE_NAME (use v0.14) · promtail on kind: kubernetes_sd gave zero
+targets → static globs `/var/log/pods/<ns>_<pod>*/*/*.log`; mount /var/log; RBAC needed for SD ·
+GROUP BY func(col) ignores index (EXPLAIN first; optimizer may ignore even USE INDEX) ·
+curl-in-loop/busybox-wget timings carry ±5-8ms own noise — measure p50 with several methods ·
+`UID` is readonly in bash · VPS logs UTC; incident Slack = Europe/Moscow.
 
 ## Stage-2 session protocol
 
-1. Start recording BEFORE touching anything (тупики are welcome).
-2. Chat format per step: **Гипотеза → Команда → Вывод (фрагмент) → Заключение**. Never invent output.
-3. Fix = repo commit + apply/ansible. Verify trio after each fix: products 200, POST /checkout 201, /metrics pool sane.
-4. Do NOT `down.sh` unless everything is on fire (up.sh is the sanctioned rebuild; full down/up cycle is proven, ~6 min).
+1. Record BEFORE touching (тупики welcome).
+2. Per step: **Гипотеза → Команда → Вывод (фрагмент) → Заключение**. Never invent output.
+3. Fix = repo commit + apply/ansible. Verify trio: products 200, POST /checkout 201, pool sane.
+4. No `down.sh` (up.sh rebuild is proven, ~8 min). Nightly cron 03:33 UTC runs the gate by itself.
+5. Core answers first (A1–A5 + incident), the A6–A31 extras = "вне критериев, интерес".
 
 ## Health snapshot (start here)
 
 ```bash
 curl -s -o /dev/null -w 'products -> %{http_code}\n' http://127.0.0.1:8080/products
 curl -s -o /dev/null -w 'checkout -> %{http_code}\n' -X POST -H 'Content-Type: application/json' -d '{"sku":"SKU-9538","qty":1}' http://127.0.0.1:8080/checkout
-kubectl -n shop get pods,svc,endpoints,pvc
+kubectl -n shop get pods,hpa -o wide
 curl -s http://127.0.0.1:8080/metrics | grep shop_pool
 kubectl -n monitoring get pods
-kubectl -n shop logs deploy/shop --tail=15
+kubectl -n argocd get application shop -o jsonpath='argo={.status.sync.status}/{.status.health.status}{"\n"}'
+bash ~/shoplite-work/repo/tools/drift.sh && echo no-drift
 ```
