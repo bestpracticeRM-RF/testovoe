@@ -1,0 +1,7 @@
+{"version": 2, "width": 80, "height": 24, "timestamp": 1792480619, "env": {"SHELL": "/bin/bash", "TERM": "xterm"}}
+[0.026756, "o", "prometheus: serviceAccountName set\r\n"]
+[28.402995, "o", "--- targets now:\r\n"]
+[28.532124, "o", "mysqld-exporter.monitoring.svc.cluster.local:9104/metrics up\r\n10.244.2.9:9100/metrics up\r\n"]
+[28.532537, "o", "10.244.0.6:9100/metrics up\r\n10.244.1.12:9100/metrics up\r\nlocalhost:9090/metrics up\r\nshop.shop.svc.cluster.local:80/metrics up\r\n"]
+[28.538014, "o", "--- node metric sample:\r\n"]
+[28.609134, "o", "{\"status\":\"success\",\"data\":{\"resultType\":\"vector\",\"result\":[{\"metric\":{\"__name__\":\"node_memory_MemAvailable_bytes\",\"instance\":\"10.244.1.12:9100\",\"job\""]

@@ -38,6 +38,23 @@ metadata:
   name: grafana-dashboard
   namespace: monitoring
 data:
+  infra.json: |
+    {"title": "ShopLite Infra", "uid": "shoplite-infra", "refresh": "15s",
+     "panels": [
+       {"type": "stat", "title": "DB threads_connected", "gridPos": {"x":0,"y":0,"w":4,"h":4},
+        "targets": [{"expr": "max(mysql_global_status_threads_connected)"}]},
+       {"type": "stat", "title": "DB conn ratio (warn>70, crit>85)", "gridPos": {"x":4,"y":0,"w":4,"h":4},
+        "fieldConfig": {"defaults": {"thresholds": {"steps": [
+          {"color": "green", "value": null}, {"color": "orange", "value": 70}, {"color": "red", "value": 85}]}}},
+        "targets": [{"expr": "100 * max(mysql_global_status_threads_connected) / max(mysql_global_variables_max_connections)"}]},
+       {"type": "timeseries", "title": "DB QPS", "gridPos": {"x":8,"y":0,"w":8,"h":4},
+        "targets": [{"expr": "rate(max(mysql_global_status_questions)[1m]) * 60"}]},
+       {"type": "timeseries", "title": "node CPU (non-idle, by node)", "gridPos": {"x":0,"y":4,"w":8,"h":5},
+        "targets": [{"expr": "100 * sum by (instance) (rate(node_cpu_seconds_total{mode!=\"idle\"}[1m])) / count by (instance) (node_cpu_seconds_total{mode=\"idle\"})"}]},
+       {"type": "timeseries", "title": "node RAM used %", "gridPos": {"x":8,"y":4,"w":8,"h":5},
+        "targets": [{"expr": "100 * (1 - node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)"}]}
+     ],
+     "schemaVersion": 39, "version": 1}
   shoplite.json: |
     {"title": "ShopLite", "uid": "shoplite", "refresh": "15s",
      "panels": [
